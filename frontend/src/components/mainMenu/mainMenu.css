@@ -37,24 +37,26 @@
 }
 .codeJoin{
     width: 100%;
-    height: 30px;
+    height: 40px;
     border: none;
-    background-color: rgb(212, 212, 212);
+    background-color: rgb(226, 226, 226);
     border-radius: 3px;
+}
+.codeJoin::placeholder, .codeJoin2::placeholder{
+    padding-left: 10px;
 }
 .vox{
     width: 100%;
     display: flex;
-    flex-direction: row;
+    flex-direction: row;    
 }
 .codeJoin2{
     width: 70%;
-    height: 30px;
+    height: 40px;
     border: none;
-    background-color: rgb(212, 212, 212);
+    background-color: rgb(226, 226, 226);
     border-radius: 3px;
 }
-
 .buttonJoin{
     margin-left: 20px;
     background-color: rgb(255, 70, 70);
@@ -63,7 +65,7 @@
     font-family: "DMSans-Bold";
     font-size: 15px;
     width: 30%;
-    height: 30px;
+    height: 40px;
     border-radius: 5px;
 }
 
@@ -74,7 +76,7 @@
     font-family: "DMSans-Bold";
     font-size: 15px;
     width: 30%;
-    height: 30px;
+    height: 40px;
     border-radius: 5px;
 }
 

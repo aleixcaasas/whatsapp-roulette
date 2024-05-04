@@ -4,6 +4,7 @@ import { FaArrowLeft } from "react-icons/fa";
 import {useLocation} from 'react-router-dom';
 
 import "./createGame.css";
+import zipIcon from "../../assets/zipIcon.png"
 
 const CreateGame = (props) => {
 	const [file, setFile] = useState(null);
@@ -88,6 +89,20 @@ const CreateGame = (props) => {
 			});
 	};
 
+	const changeFileName = () => {
+		const zipInputClick_id = document.getElementById('zipInputClick_id');
+		const fileChosen = document.getElementById('fileChosen_id');
+		zipInputClick_id.addEventListener('change', function(){
+			fileChosen.textContent = this.files[0].name
+			if(fileChosen.textContent.substr(fileChosen.textContent.length - 3) == "zip"){
+				document.getElementById('uploadImage_id').src = zipIcon
+			}
+		});
+	};
+	const returnHome = () => {
+		window.location.href = '/';
+	}
+
 	return (
 		<div id="createGameContainer_id" class="createGameContainer">
 			<div id="createGameHeader_id" class="createGameHeader">
@@ -96,19 +111,21 @@ const CreateGame = (props) => {
 			</div>
 			<div className='divCreate'>
 				<div className='titleCreateGame'>
-					<div id="arrowContainer_id" class="arrowContainer"><FaArrowLeft size={25} class='arrowLeft' /></div>
+					<div id="arrowContainer_id" class="arrowContainer"><FaArrowLeft size={25} class='arrowLeft' onClick={returnHome}/></div>
 					
 					<div id="createGameContainer_id" class="createGameContainer">
 						<h1 className='create-game'>Create Game</h1>
 						<form className='formCreate' onSubmit={sendForm}>
 							<div id="zipForm_id" class="zipForm">
 								<input type="file" class="zipInputClick" id="zipInputClick_id" onChange={(e) => setFile(e.target.files[0])} hidden/>
-								<label for="zipInputClick_id" id="zipInputClickButton_id" class="zipInputClickButton">Upload zip file</label>
+								<label for="zipInputClick_id" id="zipInputClickButton_id" class="zipInputClickButton" onClick={changeFileName}>Upload zip file</label>
+								<img src="" id="uploadImage_id" class="uploadImage"></img>
+								<span id="fileChosen_id">No file chosen</span>
 							</div>
+							<button class="createButton" type="submit">CREATE</button>
 						</form>
-						<button class="inviteFriendsButton" type="submit">INVITE FRIENDS</button>
-						<button class="playButton" type="submit">PLAY</button>
 					</div>
+					<div class="blankSpace"></div>
 				</div>
 			</div>
 		</div>
