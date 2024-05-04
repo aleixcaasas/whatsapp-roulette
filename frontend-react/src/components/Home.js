@@ -1,5 +1,6 @@
 import {React} from 'react'
 import { useState, useEffect } from 'react'
+import MainMenu from './mainMenu'
 
 function Home() {
     const [data, setData] = useState(null);
@@ -9,10 +10,10 @@ function Home() {
             .then(data => setData(data));
     }, []);
     return (
-        <div>
+        <>
             {console.log('Home')}
-            <h1>HOME</h1>
-        </div>
+            <MainMenu/>
+        </>
     )
 }
 

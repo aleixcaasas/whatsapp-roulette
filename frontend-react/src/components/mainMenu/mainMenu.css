@@ -1,0 +1,48 @@
+@font-face {
+    font-family: 'DMSans-Bold';
+    src: url("../../fonts/DMSans-Bold.ttf");
+}
+@font-face {
+    font-family: 'DMSans-Medium';
+    src: url("../../fonts/DMSans-Medium.ttf");
+}
+
+@font-face {
+    font-family: 'DMSans-Regular';
+    src: url("../../fonts/DMSans-Regular.ttf");
+}
+
+
+.title{
+    color: black;
+    font-size: 50px;
+    margin-top: 70px;
+    margin-left: 30px;
+    font-family: "DMSans-Bold";
+}
+.byNames{
+    color: grey;
+    margin-top: 5px;
+    margin-left: 30px;
+    font-size: 18px;
+    font-family: "DMSans-Regular";
+}
+.formContainer{
+
+}
+.codeJoin{
+    width: 100%;
+    border: none;
+    background-color: rgb(212, 212, 212);
+    border-radius: 3px;
+}
+.buttonJoin{
+    background-color: rgb(255, 70, 70);
+    color: white;
+    border: none;
+    font-family: "DMSans-Bold";
+    font-size: 15px;
+    width: 150px;
+    height: 30px;
+    border-radius: 10px;
+}
