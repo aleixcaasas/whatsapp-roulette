@@ -12,19 +12,6 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
   },
-  btnImg: (dimension) => ({
-    width: dimension,
-    height: dimension,
-    borderRadius: SIZES.small / 1.25,
-  }),
-  logoImg: () => ({
-    width: 300,
-    height: 200,
-    borderRadius: SIZES.small / 1.25,
-  }),
-  logoFontStyle: () => ({
-    width: 10,
-  }),
 });
 
 export default styles;
