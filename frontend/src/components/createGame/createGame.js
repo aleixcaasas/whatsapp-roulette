@@ -88,32 +88,30 @@ const CreateGame = (props) => {
 	};
 
 	return (
-		<div className="divCreate">
-			<div className="titleCreateGame">
-				<div id="arrowContainer_id" class="arrowContainer">
-					<FaArrowLeft size={25} class="arrowLeft" />
-				</div>
-
-				<div id="createGameContainer_id" class="createGameContainer">
-					<h1 className="create-game">Create Game</h1>
-					<form className="formCreate" onSubmit={sendForm}>
-						<div id="zipForm_id" class="zipForm">
-							<input
-								type="file"
-								onChange={(e) => setFile(e.target.files[0])}
-							/>
-							<label>
-								<h3>Zip File</h3>
-							</label>
-						</div>
-						<button className="button-55" type="submit">
-							Create Game
-						</button>
-					</form>
+		<div id="createGameContainer_id" class="createGameContainer">
+			<div id="createGameHeader_id" class="createGameHeader">
+				<div>Username: </div>
+				<div>0/10</div>
+			</div>
+			<div className='divCreate'>
+				<div className='titleCreateGame'>
+					<div id="arrowContainer_id" class="arrowContainer"><FaArrowLeft size={25} class='arrowLeft' /></div>
+					
+					<div id="createGameContainer_id" class="createGameContainer">
+						<h1 className='create-game'>Create Game</h1>
+						<form className='formCreate' onSubmit={sendForm}>
+							<div id="zipForm_id" class="zipForm">
+								<input type="file" class="zipInputClick" id="zipInputClick_id" onChange={(e) => setFile(e.target.files[0])} hidden/>
+								<label for="zipInputClick_id" id="zipInputClickButton_id" class="zipInputClickButton">Upload zip file</label>
+							</div>
+						</form>
+						<button class="inviteFriendsButton" type="submit">INVITE FRIENDS</button>
+						<button class="playButton" type="submit">PLAY</button>
+					</div>
 				</div>
 			</div>
 		</div>
-	);
+    )
 };
 
 export default CreateGame;
