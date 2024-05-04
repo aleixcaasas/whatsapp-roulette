@@ -1,56 +1,84 @@
 const express = require("express");
+const http = require("http");
+const socketIo = require("socket.io");
 const morgan = require("morgan");
 const cors = require("cors");
+const routes = require("./routes/routes.js");
+const bodyParser = require("body-parser");
+
 const app = express();
+const server = http.createServer(app);
+const io = socketIo(server);
 
 const PORT = 4000;
-const routes = require("./routes/routes.js"); // Se importan las rutas correctamente
-const bodyParser = require("body-parser");
 
 app.use(express.json());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.urlencoded({ extended: true }));
 app.use(
-    cors({
-        origin: "*",
-        methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-        credentials: false,
-        allowedHeaders: ["Content-Type", "Authorization"], // Agrega aquí los encabezados personalizados que estés utilizando en tu solicitud
-    })
+	cors({
+		origin: "*",
+		methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+		credentials: false,
+		allowedHeaders: ["Content-Type", "Authorization"],
+	})
 );
-app.options('*', cors());
+app.options("*", cors());
 
+// Mantener una lista de conexiones WebSocket activas
+const activeSockets = [];
+
+// WebSocket middleware
+const attachWebSocket = (io) => {
+	return (req, res, next) => {
+		req.ws = io; // Adjunta el objeto io al objeto de solicitud req
+		next();
+	};
+};
+app.use(attachWebSocket(io));
 
 app.use(
 	morgan(":method :url :status :res[content-length] - :response-time ms")
 );
 app.use("/", routes);
 
-app.listen(PORT, () => {
-	console.log(`Server listening on port ${PORT}`);
+// Manejar conexiones WebSocket entrantes
+io.on("connection", (socket) => {
+	console.log("Un cliente se ha conectado");
+
+	// Agregar la conexión WebSocket activa a la lista
+	activeSockets.push(socket);
+
+	// Manejar evento de desconexión
+	socket.on("disconnect", () => {
+		console.log("Un cliente se ha desconectado");
+		// Remover la conexión WebSocket de la lista cuando se cierre
+		activeSockets.splice(activeSockets.indexOf(socket), 1);
+	});
 });
 
-const WebSocket = require("ws");
-/*const wss = new WebSocket.Server({ server });
+// Endpoint para enviar un evento a todos los clientes conectados
+app.post("/api/sendEvent", (req, res) => {
+	try {
+		// Obtener los datos del evento desde la solicitud HTTP
+		const eventData = req.body;
 
-const activeSockets = [];
-wss.on("connection", (ws) => {
-	console.log("Cliente conectado");
-	activeSockets.push(ws);
+		// Enviar el evento a todas las conexiones WebSocket activas
+		activeSockets.forEach((socket) => {
+			socket.emit("event", eventData);
+		});
 
-	// Manejar mensajes entrantes desde el cliente
-	ws.on("message", (message) => {
-		console.log(`Mensaje recibido: ${message}`);
+		// Respuesta del servidor
+		res.status(200).json({
+			message: "Evento enviado exitosamente a todos los clientes.",
+		});
+	} catch (error) {
+		console.error("Error al enviar el evento:", error);
+		res.status(500).json({ error: "Error al enviar el evento." });
+	}
+});
 
-		// Aquí puedes agregar la lógica para procesar y responder a los mensajes recibidos desde el cliente
-		// Por ejemplo:
-		// ws.send("Mensaje recibido correctamente");
-	});
-
-	// Manejar eventos de cierre de conexión
-	ws.on("close", () => {
-		console.log("Cliente desconectado");
-		activeSockets.splice(activeSockets.indexOf(ws), 1);
-	});
-});*/
+server.listen(PORT, () => {
+	console.log(`Servidor escuchando en el puerto ${PORT}`);
+});

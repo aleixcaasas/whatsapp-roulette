@@ -1,33 +1,90 @@
-import { React } from "react";
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { FaArrowLeft } from "react-icons/fa";
+import {useLocation} from 'react-router-dom';
 
 import "./createGame.css";
 
 const CreateGame = (props) => {
 	const [file, setFile] = useState(null);
 	const [name, setName] = useState("");
+	const location = useLocation();
+
+
+	useEffect(() => {
+		// Establecer conexión WebSocket cuando se monta el componente
+		const socket = new WebSocket("ws://localhost:4000");
+
+		// Manejar evento de apertura de WebSocket
+		socket.onopen = () => {
+			console.log("WebSocket connected");
+		};
+
+		socket.onmessage = (event) => {
+			console.log(event.data);
+		}
+
+		// Manejar evento de cierre de WebSocket
+		socket.onclose = () => {
+			console.log("WebSocket disconnected");
+		};
+
+		// Limpieza al desmontar el componente
+		return () => {
+			socket.close(); // Cerrar la conexión WebSocket al desmontar el componente
+		};
+	}, []);
+
+
+	useEffect(() => {
+		// Establecer conexión WebSocket cuando se monta el componente
+		const socket = new WebSocket("ws://localhost:4000");
+
+		// Manejar evento de apertura de WebSocket
+		socket.onopen = () => {
+			console.log("WebSocket connected");
+		};
+
+		socket.onmessage = (event) => {
+			console.log(event.data);
+		}
+
+		// Manejar evento de cierre de WebSocket
+		socket.onclose = () => {
+			console.log("WebSocket disconnected");
+		};
+
+		// Limpieza al desmontar el componente
+		return () => {
+			socket.close(); // Cerrar la conexión WebSocket al desmontar el componente
+		};
+	}, []);
+
+	useEffect(() => {
+        if(location.search) {
+            const params = new URLSearchParams(location.search);
+            const nameParam = params.get('name');
+            setName(nameParam);
+			console.log(nameParam);
+        }
+    }, [location.search]);
 
 	const sendForm = (event) => {
-		event.preventDefault(); // Evitar que el formulario se envíe automáticamente
+		event.preventDefault();
 
-		const formData = new FormData(); // Crear un objeto FormData para enviar datos de formulario y archivos
-
-		formData.append("zip", file); // Agregar el archivo al formulario
-		formData.append("username", props.name); // Agregar el nombre de usuario al formulario
+		const formData = new FormData();
+		formData.append("zip", file);
+		formData.append("username", props.name);
 
 		axios
 			.post("http://localhost:4000/create-game/", formData, {
-				headers: { "Content-Type": "multipart/form-data" }, // Establecer el encabezado Content-Type adecuado para archivos
+				headers: { "Content-Type": "multipart/form-data" },
 			})
 			.then((response) => {
 				console.log("Success:", response);
-				// Handle success, maybe show a success message or redirect
 			})
 			.catch((error) => {
 				console.error("Error:", error);
-				// Handle error, maybe show an error message to the user
 			});
 	};
 
