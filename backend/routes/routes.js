@@ -1,10 +1,13 @@
 const express = require("express");
 const router = express.Router();
-const uploadFile = require("../controllers/upload.controller");
-const multer = require("multer")
+const {
+	createGame,
+	joinGame,
+} = require("../controllers/manageGame.controller");
+const multer = require("multer");
 const upload = multer({ storage: multer.memoryStorage() });
 
-
-router.post("/upload", upload.single("zip"), uploadFile);
+router.post("/create-game", upload.single("zip"), createGame);
+router.post("/join-game", joinGame);
 
 module.exports = router;
