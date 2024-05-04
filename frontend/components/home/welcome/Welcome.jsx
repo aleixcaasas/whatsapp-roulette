@@ -1,12 +1,18 @@
 import React from 'react'
-import { View, Text } from 'react-native'
+import { View, Text, Image, TouchableOpacity } from 'react-native'
+import {images} from '../../../constants'
 
-import styles from './welcome.style'
+import styles from '../../../components/common/header/screenheader.style'
 
 const Welcome = () => {
   return (
     <View>
-      <Text>Welcome</Text>
+      <Text style={styles.logoImg("100%")}>Welcome to WhatsApp Roulette</Text>
+        <Image 
+          source={images.whatsAppLogo} 
+          resizeMode="cover"
+          style={styles.logoImg("100%")}
+        />
     </View>
   )
 }

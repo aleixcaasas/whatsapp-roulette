@@ -1,6 +1,7 @@
 import { StyleSheet } from "react-native";
 
 import { COLORS, SIZES } from "../../../constants";
+import { isSearchBarAvailableForCurrentPlatform } from "react-native-screens";
 
 const styles = StyleSheet.create({
   btnContainer: {
@@ -15,6 +16,14 @@ const styles = StyleSheet.create({
     width: dimension,
     height: dimension,
     borderRadius: SIZES.small / 1.25,
+  }),
+  logoImg: () => ({
+    width: 300,
+    height: 200,
+    borderRadius: SIZES.small / 1.25,
+  }),
+  logoFontStyle: () => ({
+    width: 10,
   }),
 });
 
