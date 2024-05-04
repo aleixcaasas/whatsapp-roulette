@@ -6,7 +6,20 @@ const {
 	addPlayer,
 	startDBGame,
 	getRandomMessage,
+	getPlayersLobby,
 } = require("../database/db");
+
+const getPlayers = async (req, res) => {
+    console.log('epa', req.body);
+    const gameId = req.body.gameId;
+    const players = await getPlayersLobby(gameId);
+    if (players) {
+        res.status(200).json(players).end();
+    } else {
+        res.status(400).json({ message: "No players found" }).end();
+    }
+}
+
 
 const createGame = async (req, res) => {
 	// Verificar si se ha cargado un archivo correctamente
@@ -95,7 +108,7 @@ const createGame = async (req, res) => {
 const joinGame = async (req, res) => {
 	const gameId = req.body.gameId;
 	const username = req.body.username;
-
+	console.log(gameId, username);
 	const result = await addPlayer(gameId, username);
 
 	if (result.ok == true) {
@@ -105,7 +118,7 @@ const joinGame = async (req, res) => {
 			ws.emit("establish-socket-connection");
 			console.log("WebSocket connected");
 		}
-		res.status(200).end();
+		res.status(200).json(result).end();
 	}
 	if (!result.ok) res.status(500).json(result.message).end();
 };
@@ -129,4 +142,4 @@ const startGame = async (req, res) => {
 	}
 };
 
-module.exports = { createGame, joinGame, startGame };
+module.exports = { createGame, joinGame, startGame, getPlayers };

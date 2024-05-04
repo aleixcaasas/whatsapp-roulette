@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { FaArrowLeft } from "react-icons/fa";
-import {useLocation} from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 
 import "./createGame.css";
 import zipIcon from "../../assets/zipIcon.png"
@@ -10,7 +11,8 @@ const CreateGame = (props) => {
 	const [file, setFile] = useState(null);
 	const [name, setName] = useState("");
 	const location = useLocation();
-
+	const [lobby, setLobbyUsers] = useState([]);
+	const [gameId, setGameId] = useState("");
 
 	useEffect(() => {
 		// Establecer conexión WebSocket cuando se monta el componente
@@ -66,7 +68,6 @@ const CreateGame = (props) => {
             const params = new URLSearchParams(location.search);
             const nameParam = params.get('name');
             setName(nameParam);
-			console.log(nameParam);
         }
     }, [location.search]);
 
@@ -75,14 +76,21 @@ const CreateGame = (props) => {
 
 		const formData = new FormData();
 		formData.append("zip", file);
-		formData.append("username", props.name);
+		formData.append("username", name);
 
-		axios
-			.post("http://localhost:4000/create-game/", formData, {
-				headers: { "Content-Type": "multipart/form-data" },
-			})
+		axios.post("http://localhost:4000/create-game/", formData, {
+			headers: { "Content-Type": "multipart/form-data" },
+		})
 			.then((response) => {
-				console.log("Success:", response);
+				setGameId(response.data.gameId);
+				//fem peticio per saber la gent que hi ha a a lobby
+				axios.post("http://localhost:4000/lobby", { gameId: response.data.gameId })
+					.then((response) => {
+						setLobbyUsers(response.data);
+					})
+					.catch((error) => {
+						console.error("Error:", error);
+					});
 			})
 			.catch((error) => {
 				console.error("Error:", error);
@@ -127,6 +135,18 @@ const CreateGame = (props) => {
 					</div>
 					<div class="blankSpace"></div>
 				</div>
+			</div>
+			<div>
+				{lobby ? (
+					<div>
+						<h2>Players in lobby</h2>
+						<ul>
+							{lobby.map((player, index) => (
+								<li key={index}>{player}</li>
+							))}
+						</ul>
+					</div>
+				) : null}
 			</div>
 		</div>
     )
