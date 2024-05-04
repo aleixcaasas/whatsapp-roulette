@@ -65,7 +65,6 @@ const CreateGame = (props) => {
             const params = new URLSearchParams(location.search);
             const nameParam = params.get('name');
             setName(nameParam);
-			console.log(nameParam);
         }
     }, [location.search]);
 
@@ -74,7 +73,7 @@ const CreateGame = (props) => {
 
 		const formData = new FormData();
 		formData.append("zip", file);
-		formData.append("username", props.name);
+		formData.append("username", name);
 
 		axios
 			.post("http://localhost:4000/create-game/", formData, {
@@ -107,16 +106,6 @@ const CreateGame = (props) => {
 								<h3>Zip File</h3>
 							</label>
 						</div>
-
-						<label>
-							<h3>Username</h3>
-						</label>
-						<input
-							className="button-56"
-							type="text"
-							onChange={(e) => setName(e.target.value)}
-							required
-						/>
 						<button className="button-55" type="submit">
 							Create Game
 						</button>
