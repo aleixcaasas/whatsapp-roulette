@@ -140,6 +140,7 @@ const CreateGame = (props) => {
 				{lobby ? (
 					<div>
 						<h2>Players in lobby</h2>
+						<h1>{gameId}</h1>
 						<ul>
 							{lobby.map((player, index) => (
 								<li key={index}>{player}</li>
