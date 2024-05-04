@@ -30,8 +30,9 @@ async function insertGame(game) {
 	});
 
 	try {
+		console.log('tete')
 		await client.connect();
-
+		console.log('tete')
 		const database = client.db(); // Obtiene la base de datos especificada en la URI
 		const collection = database.collection(collectionName);
 
