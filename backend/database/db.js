@@ -75,7 +75,7 @@ async function addPlayer(gameId, username) {
 		// Buscar el juego por su ID y actualizar la lista de usuarios
 		const result = await collection.updateOne(
 			{ gameId: gameId },
-			{ $addToSet: { players: username } } // Añadir el jugador si no está presente en la lista de usuarios
+			{ $push: { players: username } } // Añadir el jugador si no está presente en la lista de usuarios
 		);
 
 		if (result.modifiedCount === 1) {
