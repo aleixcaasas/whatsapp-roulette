@@ -1,3 +1,9 @@
+<<<<<<< HEAD
+node_modules/
+.expo/
+dist/
+npm-debug.*
+=======
 # Learn more https://docs.github.com/en/get-started/getting-started-with-git/ignoring-files
 
 # dependencies
@@ -10,11 +16,19 @@ web-build/
 
 # Native
 *.orig.*
+>>>>>>> 92983f00474b1d5ce2d134f69de20a04c02ed5e4
 *.jks
 *.p8
 *.p12
 *.key
 *.mobileprovision
+<<<<<<< HEAD
+*.orig.*
+web-build/
+
+# macOS
+.DS_Store
+=======
 
 # Metro
 .metro-health-check*
@@ -33,3 +47,4 @@ yarn-error.*
 
 # typescript
 *.tsbuildinfo
+>>>>>>> 92983f00474b1d5ce2d134f69de20a04c02ed5e4
