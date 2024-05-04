@@ -6,12 +6,17 @@ import "../../fonts/DMSans-Medium.ttf";
 import "../../fonts/DMSans-Regular.ttf";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import { Link } from "react-router-dom";
+
+import io from 'socket.io-client';
+
+
 
 function MainMenu() {
 	const [codi, setCodi] = useState(null);
 	const [name, setName] = useState("");
 	const navigation = useNavigate();
+
+	const socket = io('ws://localhost:4000');
 
 	const createGame = () => {
 		if (name === "") return;

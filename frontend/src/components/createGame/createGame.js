@@ -2,19 +2,17 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { FaArrowLeft } from "react-icons/fa";
 import { useLocation } from 'react-router-dom';
-import { Link } from 'react-router-dom';
-
 import "./createGame.css";
 import zipIcon from "../../assets/zipIcon.png"
 
-const CreateGame = (props) => {
+const CreateGame = () => {
 	const [file, setFile] = useState(null);
 	const [name, setName] = useState("");
 	const location = useLocation();
 	const [lobby, setLobbyUsers] = useState([]);
-	const [gameId, setGameId] = useState("");
+	const [gameId, setGameId] = useState("");	
 
-	useEffect(() => {
+	/*useEffect(() => {
 		// Establecer conexión WebSocket cuando se monta el componente
 		const socket = new WebSocket("ws://localhost:4000");
 
@@ -36,10 +34,10 @@ const CreateGame = (props) => {
 		return () => {
 			socket.close(); // Cerrar la conexión WebSocket al desmontar el componente
 		};
-	}, []);
+	}, []);*/
 
 
-	useEffect(() => {
+	/*useEffect(() => {
 		// Establecer conexión WebSocket cuando se monta el componente
 		const socket = new WebSocket("ws://localhost:4000");
 
@@ -61,7 +59,7 @@ const CreateGame = (props) => {
 		return () => {
 			socket.close(); // Cerrar la conexión WebSocket al desmontar el componente
 		};
-	}, []);
+	}, []);*/
 
 	useEffect(() => {
         if(location.search) {

@@ -91,11 +91,11 @@ const createGame = async (req, res) => {
 
 	if (status == true) {
 		// Obtener el WebSocket del usuario que creó el juego
-		const ws = req.ws; // Supongamos que req.ws contiene la conexión WebSocket del cliente
+		/*const ws = req.ws; // Supongamos que req.ws contiene la conexión WebSocket del cliente
 		if (ws) {
 			ws.emit("establish-socket-connection");
 			console.log("WebSocket connected");
-		}
+		}*/
 		// Enviar respuesta a la petición HTTP
 		res.status(201).json({ gameId }).end();
 	} else {
@@ -113,11 +113,11 @@ const joinGame = async (req, res) => {
 
 	if (result.ok == true) {
 		// Enviar mensaje al cliente para establecer la conexión WebSocket
-		const ws = req.ws; // Supongamos que req.ws contiene la conexión WebSocket del cliente
+		/*const ws = req.ws; // Supongamos que req.ws contiene la conexión WebSocket del cliente
 		if (ws) {
 			ws.emit("establish-socket-connection");
 			console.log("WebSocket connected");
-		}
+		}*/
 		res.status(200).json(result).end();
 	}
 	if (!result.ok) res.status(500).json(result.message).end();
@@ -130,9 +130,9 @@ const startGame = async (req, res) => {
 
 	if (status.ok) {
 		// Emitir un evento a todas las conexiones WebSocket activas
-		activeSockets.forEach((ws) => {
+		/*activeSockets.forEach((ws) => {
 			ws.emit("game-started", { gameId, message }); // Emitir el evento "game-started" con los datos relevantes
-		});
+		});*/
 
 		res.status(200).json({
 			message: "El juego ha comenzado correctamente.",
