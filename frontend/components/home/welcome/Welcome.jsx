@@ -1,4 +1,5 @@
 import React from 'react'
+
 import { useState } from 'react'
 import { View, Text, TextInput, TouchableOpacity, Image, FlatList } from 'react-native'
 import {useRouter} from 'expo-router'
@@ -13,6 +14,12 @@ const Welcome = () => {
 
   return (
     <View>
+      <Text style={styles.logoImg("100%")}>Welcome to WhatsApp Roulette</Text>
+        <Image 
+          source={images.whatsAppLogo} 
+          resizeMode="cover"
+          style={styles.logoImg("100%")}
+        />
       <View style={styles.container}>
         <Text style={styles.userName}>Hello "NAME"</Text>
         <Text style={styles.welcomeMessage}>Find your job</Text>

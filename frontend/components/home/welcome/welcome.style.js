@@ -67,6 +67,19 @@ const styles = StyleSheet.create({
     fontFamily: FONT.medium,
     color: activeJobType === item ? COLORS.secondary : COLORS.gray2,
   }),
+  btnImg: (dimension) => ({
+    width: dimension,
+    height: dimension,
+    borderRadius: SIZES.small / 1.25,
+  }),
+  logoImg: () => ({
+    width: 300,
+    height: 200,
+    borderRadius: SIZES.small / 1.25,
+  }),
+  logoFontStyle: () => ({
+    width: 10,
+  }),
 });
 
 export default styles;

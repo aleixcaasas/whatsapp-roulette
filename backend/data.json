@@ -1,5 +1,8 @@
 {
-    "users": [],
+    "gameId": "57886",
+    "players": [
+        "aleixcaasas"
+    ],
     "messages": [
         {
             "sender": "UAB Gang 🥵🔫",
@@ -1801,5 +1804,12 @@
             "content": "https://drive.google.com/file/d/1BuN8D35FEuLEMlTXxshmlsGE-wdYbBEv/view?usp=drivesdk",
             "isMedia": false
         }
+    ],
+    "users": [
+        "UAB Gang 🥵🔫",
+        "Isaac Pascual",
+        "Eric Subirana",
+        "AleixCaasas",
+        "Arnau Coll"
     ]
 }
