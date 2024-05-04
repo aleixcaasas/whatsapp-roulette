@@ -5,7 +5,7 @@ import { FaArrowLeft } from "react-icons/fa";
 
 import "./createGame.css";
 
-const CreateGame = () => {
+const CreateGame = (props) => {
 	const [file, setFile] = useState(null);
 	const [name, setName] = useState("");
 
@@ -15,7 +15,7 @@ const CreateGame = () => {
 		const formData = new FormData(); // Crear un objeto FormData para enviar datos de formulario y archivos
 
 		formData.append("zip", file); // Agregar el archivo al formulario
-		formData.append("username", name); // Agregar el nombre de usuario al formulario
+		formData.append("username", props.name); // Agregar el nombre de usuario al formulario
 
 		axios
 			.post("http://localhost:4000/create-game/", formData, {
