@@ -108,7 +108,7 @@ const createGame = async (req, res) => {
 const joinGame = async (req, res) => {
 	const gameId = req.body.gameId;
 	const username = req.body.username;
-
+	console.log(gameId, username);
 	const result = await addPlayer(gameId, username);
 
 	if (result.ok == true) {
@@ -118,7 +118,7 @@ const joinGame = async (req, res) => {
 			ws.emit("establish-socket-connection");
 			console.log("WebSocket connected");
 		}
-		res.status(200).end();
+		res.status(200).json(result).end();
 	}
 	if (!result.ok) res.status(500).json(result.message).end();
 };

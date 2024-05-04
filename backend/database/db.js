@@ -4,7 +4,7 @@ const { MongoClient } = require("mongodb");
 const connectDB = async () => {
 	try {
 		await mongoose.connect(
-			"mongodb+srv://acasasbarco:NMVHhI3Wyp67Yibx@database.fvxjvmg.mongodb.net/?retryWrites=true&w=majority&appName=database",
+			"mongodb://localhost:27017/tetes",
 			{
 				useNewUrlParser: true,
 				useUnifiedTopology: true,
@@ -18,7 +18,7 @@ const connectDB = async () => {
 
 // URL de conexión a la base de datos de MongoDB Atlas
 const uri =
-	"mongodb+srv://acasasbarco:NMVHhI3Wyp67Yibx@database.fvxjvmg.mongodb.net/?retryWrites=true&w=majority&appName=database";
+	"mongodb://localhost:27017/tetes";
 
 // Nombre de la colección en la que deseas insertar el juego
 const collectionName = "games";
@@ -30,9 +30,7 @@ async function insertGame(game) {
 	});
 
 	try {
-		console.log('tete')
 		await client.connect();
-		console.log('tete')
 		const database = client.db(); // Obtiene la base de datos especificada en la URI
 		const collection = database.collection(collectionName);
 
@@ -47,6 +45,23 @@ async function insertGame(game) {
 		await client.close();
 	}
 }
+async function getPlayersLobby(gameId) {
+    const client = new MongoClient(uri);
+    try {
+        await client.connect();
+        const database = client.db();
+        const collection = database.collection(collectionName);
+        const result = await collection.find({ 'gameId': gameId }).toArray();
+        const players = result.map(doc => doc.players);
+        return players; // Devuelve el array de jugadores al llamador
+    } catch (error) {
+        console.log('Error en getPlayersLobby:', error);
+        throw error; // Lanza el error para manejarlo en la función de llamada si es necesario
+    } finally {
+        await client.close(); // Asegúrate de cerrar el cliente MongoDB después de su uso
+    }
+}
+
 
 async function addPlayer(gameId, username) {
 	const client = new MongoClient(uri);
@@ -158,4 +173,5 @@ module.exports = {
 	addPlayer,
 	startDBGame: startGame,
 	getRandomMessage,
+	getPlayersLobby,
 };

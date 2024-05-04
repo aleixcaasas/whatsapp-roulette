@@ -63,13 +63,12 @@ const CreateGame = (props) => {
 	}, []);
 
 	useEffect(() => {
-		if (location.search) {
-			const params = new URLSearchParams(location.search);
-			const nameParam = params.get('name');
-			setName(nameParam);
-			console.log(nameParam);
-		}
-	}, [location.search]);
+        if(location.search) {
+            const params = new URLSearchParams(location.search);
+            const nameParam = params.get('name');
+            setName(nameParam);
+        }
+    }, [location.search]);
 
 	const sendForm = (event) => {
 		event.preventDefault();
@@ -98,56 +97,29 @@ const CreateGame = (props) => {
 	};
 
 	return (
-		<div className="divCreate">
-			<div>
-				<div className="titleCreateGame">
-					<div id="arrowContainer_id" class="arrowContainer">
-						<FaArrowLeft size={25} class="arrowLeft" />
-					</div>
-
+		<div id="createGameContainer_id" class="createGameContainer">
+			<div id="createGameHeader_id" class="createGameHeader">
+				<div>Username: </div>
+				<div>0/10</div>
+			</div>
+			<div className='divCreate'>
+				<div className='titleCreateGame'>
+					<div id="arrowContainer_id" class="arrowContainer"><FaArrowLeft size={25} class='arrowLeft' /></div>
+					
 					<div id="createGameContainer_id" class="createGameContainer">
-						<h1 className="create-game">Create Game</h1>
-						<form className="formCreate" onSubmit={sendForm}>
+						<h1 className='create-game'>Create Game</h1>
+						<form className='formCreate' onSubmit={sendForm}>
 							<div id="zipForm_id" class="zipForm">
-								<input
-									type="file"
-									onChange={(e) => setFile(e.target.files[0])}
-								/>
-								<label>
-									<h3>Zip File</h3>
-								</label>
+								<input type="file" class="zipInputClick" id="zipInputClick_id" onChange={(e) => setFile(e.target.files[0])} hidden/>
+								<label for="zipInputClick_id" id="zipInputClickButton_id" class="zipInputClickButton">Upload zip file</label>
 							</div>
-
-							<label>
-								<h3>Username</h3>
-							</label>
-							<input
-								className="button-56"
-								type="text"
-								onChange={(e) => setName(e.target.value)}
-								required
-							/>
-							<button className="button-55" type="submit">
-								Create Game
-							</button>
+							<button class="playButton" type="submit">PLAY</button>
 						</form>
 					</div>
 				</div>
 			</div>
-			<div className="lobby">
-				{lobby ? ( 
-					<div>
-						<h1>Players in lobby:</h1>
-						<ul>
-							{lobby.map((player, index) => (
-								<li key={index}>{player}</li>
-							))}
-						</ul>
-					</div>
-				) : null}
-			</div>
 		</div>
-	);
+    )
 };
 
 export default CreateGame;
