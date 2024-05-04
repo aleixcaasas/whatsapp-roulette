@@ -1,7 +1,12 @@
 const AdmZip = require("adm-zip");
 const Game = require("../models/game");
 const { generateGameId } = require("../utils/generateGameID");
-const { insertGame, addPlayer } = require("../database/db");
+const {
+	insertGame,
+	addPlayer,
+	startDBGame,
+	getRandomMessage,
+} = require("../database/db");
 
 const createGame = async (req, res) => {
 	// Verificar si se ha cargado un archivo correctamente
@@ -72,13 +77,19 @@ const createGame = async (req, res) => {
 	const status = await insertGame(game);
 
 	if (status == true) {
+		// Obtener el WebSocket del usuario que creó el juego
+		const ws = req.ws; // Supongamos que req.ws contiene la conexión WebSocket del usuario
+		if (ws) {
+			// Enviar un mensaje al usuario para establecer la conexión WebSocket
+			ws.send("¡Juego creado! Estableciendo conexión WebSocket...");
+		}
+		// Enviar respuesta a la petición HTTP
 		res.status(201).json({ gameId }).end();
 	} else {
 		res.status(500)
 			.json({ message: "Error creating game. Try Again" })
 			.end();
 	}
-	// Devolver los mensajes procesados en la respuesta
 };
 
 const joinGame = async (req, res) => {
@@ -86,9 +97,25 @@ const joinGame = async (req, res) => {
 	const username = req.body.username;
 
 	const result = await addPlayer(gameId, username);
-	console.log(result);
-	if (result.ok == true) res.status(200).end();
+
+	if (result.ok == true) {
+		// Obtener el WebSocket del usuario que se une al juego
+		const ws = req.ws; // Supongamos que req.ws contiene la conexión WebSocket del usuario
+		if (ws) {
+			// Enviar un mensaje al usuario para establecer la conexión WebSocket
+			ws.send(
+				"¡Te has unido al juego! Estableciendo conexión WebSocket..."
+			);
+		}
+		res.status(200).end();
+	}
 	if (!result.ok) res.status(500).json(result.message).end();
 };
 
-module.exports = { createGame, joinGame };
+const startGame = async (req, res) => {
+	const gameId = req.body.gameId;
+	const message = await getRandomMessage(gameId);
+	startDBGame(gameId, message);
+};
+
+module.exports = { createGame, joinGame, startGame };

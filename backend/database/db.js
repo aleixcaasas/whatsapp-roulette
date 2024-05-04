@@ -79,4 +79,82 @@ async function addPlayer(gameId, username) {
 	}
 }
 
-module.exports = { connectDB, insertGame, addPlayer };
+async function startGame(gameId, message) {
+	const client = new MongoClient(uri);
+
+	try {
+		await client.connect();
+
+		const database = client.db(); // Obtiene la base de datos especificada en la URI
+		const collection = database.collection(collectionName);
+
+		// Buscar el juego por su ID y actualizar el estado del juego
+		const result = await collection.updateOne(
+			{ gameId: gameId },
+			{
+				$set: {
+					isGameStarted: true,
+					rounds: [{ message: message, votes: [] }],
+				},
+			}
+		);
+
+		if (result.modifiedCount === 1) {
+			console.log(`Juego con ID ${gameId} iniciado correctamente`);
+			return { ok: true };
+		} else {
+			console.log(`No se encontró ningún juego con el ID ${gameId}`);
+			return { ok: false, message: "No game Id" };
+		}
+	} catch (error) {
+		console.error("Error al iniciar el juego:", error);
+		return { ok: false, message: "Error starting game" };
+	} finally {
+		await client.close();
+	}
+}
+
+async function getRandomMessage(gameId) {
+	const client = new MongoClient(uri);
+
+	try {
+		await client.connect();
+
+		const database = client.db(); // Obtiene la base de datos especificada en la URI
+		const collection = database.collection(collectionName);
+
+		// Buscar el juego por su ID
+		const game = await collection.findOne({
+			gameId: gameId,
+		});
+
+		if (!game) {
+			console.log(`No se encontró ningún juego con el ID ${gameId}`);
+			return { ok: false, message: "No game found" };
+		}
+
+		// Obtener la lista de mensajes del juego
+		const messages = game.messages;
+
+		// Seleccionar un mensaje aleatorio
+		const randomIndex = Math.floor(Math.random() * messages.length);
+		const randomMessage = messages[randomIndex];
+
+		console.log("Mensaje aleatorio seleccionado:", randomMessage);
+
+		return { ok: true, message: randomMessage };
+	} catch (error) {
+		console.error("Error al obtener mensaje aleatorio:", error);
+		return { ok: false, message: "Error getting random message" };
+	} finally {
+		await client.close();
+	}
+}
+
+module.exports = {
+	connectDB,
+	insertGame,
+	addPlayer,
+	startDBGame: startGame,
+	getRandomMessage,
+};
