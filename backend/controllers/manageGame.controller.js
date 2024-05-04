@@ -3,13 +3,15 @@ const Game = require("../models/game");
 const { generateGameId } = require("../utils/generateGameID");
 const { insertGame, addPlayer } = require("../database/db");
 
-const createGame = (req, res) => {
+const createGame = async (req, res) => {
 	// Verificar si se ha cargado un archivo correctamente
 	if (!req.file) {
 		return res.status(400).json({ error: "No file uploaded" });
 	}
 
 	const player = req.body.username;
+	if (!player)
+		res.status(500).json({ message: "Error creating game. Try Again" });
 
 	const zipBuffer = req.file.buffer;
 
@@ -67,9 +69,16 @@ const createGame = (req, res) => {
 		}
 	});
 
-	insertGame(game);
+	const status = await insertGame(game);
+
+	if (status == true) {
+		res.status(201).json({ gameId }).end();
+	} else {
+		res.status(500)
+			.json({ message: "Error creating game. Try Again" })
+			.end();
+	}
 	// Devolver los mensajes procesados en la respuesta
-	res.json(game);
 };
 
 const joinGame = async (req, res) => {
@@ -79,7 +88,7 @@ const joinGame = async (req, res) => {
 	const result = await addPlayer(gameId, username);
 	console.log(result);
 	if (result.ok == true) res.status(200).end();
-	if (!result.ok) res.status(500).json(result.message);
+	if (!result.ok) res.status(500).json(result.message).end();
 };
 
 module.exports = { createGame, joinGame };

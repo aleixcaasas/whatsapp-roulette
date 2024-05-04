@@ -38,8 +38,10 @@ async function insertGame(game) {
 		// Insertar el juego en la colección
 		const result = await collection.insertOne(game);
 		console.log(`El juego se ha insertado con el ID: ${result.insertedId}`);
+		return true;
 	} catch (error) {
 		console.error("Error al insertar el juego:", error);
+		return false;
 	} finally {
 		await client.close();
 	}
@@ -63,7 +65,6 @@ async function addPlayer(gameId, username) {
 		if (result.modifiedCount === 1) {
 			console.log(
 				`Usuario ${username} añadido al juego con ID ${gameId}`
-
 			);
 			return { ok: true };
 		} else {
