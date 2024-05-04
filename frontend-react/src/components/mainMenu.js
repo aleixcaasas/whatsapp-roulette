@@ -4,8 +4,16 @@ import './mainMenu/mainMenu.css'
 import '../fonts/DMSans-Bold.ttf'
 import '../fonts/DMSans-Medium.ttf'
 import '../fonts/DMSans-Regular.ttf'
+import { useNavigate } from 'react-router-dom';
 
-function mainMenu(){
+function MainMenu(){
+    const [data, setData] = useState(null);
+    const navigation = useNavigate();
+
+    const createGame = () => {
+        navigation('/createGame');
+    }
+
     return(
         <>
             <div id="title_id" class="title">Wellcome to WhatsApp Roulette</div>
@@ -14,9 +22,9 @@ function mainMenu(){
                 <input id="codeJoin_id" class="codeJoin" placeholder="Insert game code:"></input>
                 <button id="buttonJoin_id" class="buttonJoin">JOIN PARTY</button>
             </div>
-            <button id="buttonCreateGame_id" class="createGame" onClick>CREATE GAME</button>
+            <button id="buttonCreateGame_id" class="createGame" onClick={createGame}>CREATE GAME</button>
         </>
     )
 }
 
-export default mainMenu
+export default MainMenu
