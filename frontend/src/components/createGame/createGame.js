@@ -32,33 +32,23 @@ const CreateGame = () => {
 	};
 
 	return (
-		<div className="divCreate">
-			<div className="titleCreateGame">
-				<FaArrowLeft size={25} className="arrowleft" />
-				<h1 className="create-game">Create Game</h1>
-			</div>
-			<form className="formCreate" onSubmit={sendForm}>
-				<label>
-					<h3>Zip File</h3>
-				</label>
-				<input
-					type="file"
-					onChange={(e) => setFile(e.target.files[0])}
-				/>
-				<label>
-					<h3>Username</h3>
-				</label>
-				<input
-					className="button-56"
-					type="text"
-					onChange={(e) => setName(e.target.value)}
-				/>
-				<button className="button-55" type="submit">
-					Create Game
-				</button>
-			</form>
-		</div>
-	);
+        <div className='divCreate'>
+            <div className='titleCreateGame'>
+                <div><FaArrowLeft size={25} className='arrowleft' /></div>
+                
+                <div id="createGameContainer_id" class="createGameContainer">
+                <h1 className='create-game'>Create Game</h1>
+                <form className='formCreate' onSubmit={sendForm}>
+                    <label><h3>Zip File</h3></label>
+                    <input type="file" onChange={(e) => setFile(e.target.files[0])} />
+                    <label><h3>Username</h3></label>
+                    <input className="button-56" type="text" onChange={(e) => setName(e.target.value)} required />
+                    <button className="button-55" type="submit">Create Game</button>
+                </form>
+            </div>
+            </div>
+        </div>
+    )
 };
 
 export default CreateGame;
