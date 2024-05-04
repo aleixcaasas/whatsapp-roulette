@@ -20,7 +20,7 @@ function MainMenu() {
 
     const joinGame = () => {
         if(codi === '' || name === '') return;
-        axios.post('http://localhost:3001/joinGame', { gameId: codi, username: name });
+        axios.post('http://localhost:3001/join-game', { gameId: codi, username: name });
     }
 
     return (
@@ -30,7 +30,7 @@ function MainMenu() {
             <form onSubmit={joinGame} id="formContainer_id" class="formContainer">
             <input placeholder='Username' className="codeJoin" type="text" onChange={(e) => setName(e.target.value)} required/>
                 <div className='vox'  style={{marginTop:"15px"}}>
-                    <input id="codeJoin_id" class="codeJoin2" placeholder="Insert game code:" onChange={(e) => setCodi(e.target.value)} required></input>
+                    <input id="codeJoin_id" class="codeJoin2" placeholder="Insert game code" onChange={(e) => setCodi(e.target.value)} required></input>
                     <button type="submit" id="buttonJoin_id" class="buttonJoin">JOIN PARTY</button>
                 </div>
                 <div style={{marginTop:"15px", marginLeft:""}}>

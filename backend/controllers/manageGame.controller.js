@@ -6,7 +6,20 @@ const {
 	addPlayer,
 	startDBGame,
 	getRandomMessage,
+	getPlayersLobby,
 } = require("../database/db");
+
+const getPlayers = async (req, res) => {
+    console.log('epa', req.body);
+    const gameId = req.body.gameId;
+    const players = await getPlayersLobby(gameId);
+    if (players) {
+        res.status(200).json(players).end();
+    } else {
+        res.status(400).json({ message: "No players found" }).end();
+    }
+}
+
 
 const createGame = async (req, res) => {
 	// Verificar si se ha cargado un archivo correctamente
@@ -129,4 +142,4 @@ const startGame = async (req, res) => {
 	}
 };
 
-module.exports = { createGame, joinGame, startGame };
+module.exports = { createGame, joinGame, startGame, getPlayers };
