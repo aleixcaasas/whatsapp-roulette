@@ -1,11 +1,10 @@
 import {React} from 'react'
 import { useState, useEffect } from 'react'
-import MainMenu from './mainMenu'
+import MainMenu from '../components/mainMenu/mainMenu'
 
 function Home() {
     return (
         <>
-            {console.log('Home')}
             <MainMenu/>
         </>
     )
