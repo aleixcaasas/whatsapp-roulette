@@ -71,6 +71,12 @@ const CreateGame = (props) => {
         }
     }, [location.search]);
 
+	useEffect(() => {
+		const par = new URLSearchParams(location.search);
+		const namePar = par.get('name');
+		document.getElementById('usernameHeader_id').innerHTML = "Username: " + namePar
+	})
+
 	const sendForm = (event) => {
 		event.preventDefault();
 
@@ -114,13 +120,12 @@ const CreateGame = (props) => {
 	return (
 		<div id="createGameContainer_id" class="createGameContainer">
 			<div id="createGameHeader_id" class="createGameHeader">
-				<div>Username: </div>
-				<div>0/10</div>
+				<div id="usernameHeader_id" class="usernameHeader"></div>
+				<div>1/10</div>
 			</div>
 			<div className='divCreate'>
 				<div className='titleCreateGame'>
 					<div id="arrowContainer_id" class="arrowContainer"><FaArrowLeft size={25} class='arrowLeft' onClick={returnHome}/></div>
-					
 					<div id="createGameContainer_id" class="createGameContainer">
 						<h1 className='create-game'>Create Game</h1>
 						<form className='formCreate' onSubmit={sendForm}>
@@ -133,19 +138,23 @@ const CreateGame = (props) => {
 							<button class="createButton" type="submit">CREATE</button>
 						</form>
 					</div>
+					{console.log("Lobby: ", lobby)}
 					<div class="blankSpace"></div>
 				</div>
 			</div>
 			<div>
-				{lobby ? (
-					<div>
-						<h2>Players in lobby</h2>
-						<h1>{gameId}</h1>
-						<ul>
-							{lobby.map((player, index) => (
-								<li key={index}>{player}</li>
-							))}
-						</ul>
+				{lobby.length > 0 ? (
+					
+					<div id="lobbyPlayersContainer_id" class="lobbyPlayersContainer">
+						<div class="playersLobbyText">Players Lobby</div>
+						<div class="inviteFriendsCodeContainer">
+							<div class="inviteFriendsCode">Invitation code:</div>
+							<div class="gameId">{gameId}</div>
+						</div>
+						{lobby.map((player, index) => (
+							<div class="playerStyleCSS" key={index}>[Player {index+1}] <h1 class="h1Playertext">{player}</h1></div>
+						))}
+						<button class="playButton" type="submit">PLAY GAME</button>
 					</div>
 				) : null}
 			</div>
