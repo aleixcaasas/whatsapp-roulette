@@ -78,10 +78,10 @@ const createGame = async (req, res) => {
 
 	if (status == true) {
 		// Obtener el WebSocket del usuario que creó el juego
-		const ws = req.ws; // Supongamos que req.ws contiene la conexión WebSocket del usuario
+		const ws = req.ws; // Supongamos que req.ws contiene la conexión WebSocket del cliente
 		if (ws) {
-			// Enviar un mensaje al usuario para establecer la conexión WebSocket
-			ws.send("¡Juego creado! Estableciendo conexión WebSocket...");
+			ws.emit("establish-socket-connection");
+			console.log("WebSocket connected");
 		}
 		// Enviar respuesta a la petición HTTP
 		res.status(201).json({ gameId }).end();
@@ -99,13 +99,11 @@ const joinGame = async (req, res) => {
 	const result = await addPlayer(gameId, username);
 
 	if (result.ok == true) {
-		// Obtener el WebSocket del usuario que se une al juego
-		const ws = req.ws; // Supongamos que req.ws contiene la conexión WebSocket del usuario
+		// Enviar mensaje al cliente para establecer la conexión WebSocket
+		const ws = req.ws; // Supongamos que req.ws contiene la conexión WebSocket del cliente
 		if (ws) {
-			// Enviar un mensaje al usuario para establecer la conexión WebSocket
-			ws.send(
-				"¡Te has unido al juego! Estableciendo conexión WebSocket..."
-			);
+			ws.emit("establish-socket-connection");
+			console.log("WebSocket connected");
 		}
 		res.status(200).end();
 	}
@@ -115,7 +113,20 @@ const joinGame = async (req, res) => {
 const startGame = async (req, res) => {
 	const gameId = req.body.gameId;
 	const message = await getRandomMessage(gameId);
-	startDBGame(gameId, message);
+	const status = startDBGame(gameId, message);
+
+	if (status.ok) {
+		// Emitir un evento a todas las conexiones WebSocket activas
+		activeSockets.forEach((ws) => {
+			ws.emit("game-started", { gameId, message }); // Emitir el evento "game-started" con los datos relevantes
+		});
+
+		res.status(200).json({
+			message: "El juego ha comenzado correctamente.",
+		});
+	} else {
+		res.status(500).json({ error: "Error al iniciar el juego." });
+	}
 };
 
 module.exports = { createGame, joinGame, startGame };
