@@ -1,3 +1,6 @@
+const fs = require("fs");
+const path = require("path");
+
 const AdmZip = require("adm-zip");
 const Game = require("../models/game");
 const { generateGameId } = require("../utils/generateGameID");
@@ -10,16 +13,14 @@ const {
 } = require("../database/db");
 
 const getPlayers = async (req, res) => {
-    console.log('epa', req.body);
-    const gameId = req.body.gameId;
-    const players = await getPlayersLobby(gameId);
-    if (players) {
-        res.status(200).json(players).end();
-    } else {
-        res.status(400).json({ message: "No players found" }).end();
-    }
-}
-
+	const gameId = req.body.gameId;
+	const players = await getPlayersLobby(gameId);
+	if (players) {
+		res.status(200).json(players).end();
+	} else {
+		res.status(400).json({ message: "No players found" }).end();
+	}
+};
 
 const createGame = async (req, res) => {
 	// Verificar si se ha cargado un archivo correctamente
@@ -87,6 +88,18 @@ const createGame = async (req, res) => {
 		}
 	});
 
+	// Crear el directorio temp si no existe
+	const tempDir = path.join(__dirname, "temp");
+	if (!fs.existsSync(tempDir)) {
+		fs.mkdirSync(tempDir);
+	}
+
+	// Almacenar el archivo cargado en una ubicación temporal
+	const filePath = path.join(__dirname, "temp", gameId + ".zip");
+	console.log(filePath);
+	fs.writeFileSync(filePath, zipBuffer);
+	game.setFilePath(filePath);
+
 	const status = await insertGame(game);
 
 	if (status == true) {
@@ -108,7 +121,6 @@ const createGame = async (req, res) => {
 const joinGame = async (req, res) => {
 	const gameId = req.body.gameId;
 	const username = req.body.username;
-	console.log(gameId, username);
 	const result = await addPlayer(gameId, username);
 
 	if (result.ok == true) {
@@ -125,20 +137,36 @@ const joinGame = async (req, res) => {
 
 const startGame = async (req, res) => {
 	const gameId = req.body.gameId;
-	const message = await getRandomMessage(gameId);
-	const status = startDBGame(gameId, message);
+	const status = await startDBGame(gameId);
 
 	if (status.ok) {
 		// Emitir un evento a todas las conexiones WebSocket activas
-		activeSockets.forEach((ws) => {
-			ws.emit("game-started", { gameId, message }); // Emitir el evento "game-started" con los datos relevantes
-		});
+		/*activeSockets.forEach((ws) => {
+			ws.emit("game-started", { gameId }); // Emitir el evento "game-started" con los datos relevantes
+		});*/
 
-		res.status(200).json({
-			message: "El juego ha comenzado correctamente.",
-		});
+		res.status(200)
+			.json({
+				ok: true,
+				message: "El juego ha comenzado correctamente.",
+			})
+			.end();
 	} else {
-		res.status(500).json({ error: "Error al iniciar el juego." });
+		res.status(500)
+			.json({ ok: false, error: "Error al iniciar el juego." })
+			.end();
+	}
+};
+
+const getRoundData = async (req, res) => {
+	const gameId = req.body.gameId;
+	const round = req.body.round;
+	const roundData = await getRound(gameId, round);
+
+	if (roundData) {
+		res.status(200).json(roundData).end();
+	} else {
+		res.status(400).json({ message: "No round data found" }).end();
 	}
 };
 
