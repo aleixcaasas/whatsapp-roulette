@@ -110,13 +110,25 @@ const CreateGame = (props) => {
 						<h1 className='create-game'>Create Game</h1>
 						<form className='formCreate' onSubmit={sendForm}>
 							<div id="zipForm_id" class="zipForm">
-								<input type="file" class="zipInputClick" id="zipInputClick_id" onChange={(e) => setFile(e.target.files[0])} hidden/>
+								<input type="file" class="zipInputClick" id="zipInputClick_id" onChange={(e) => setFile(e.target.files[0])} hidden required/>
 								<label for="zipInputClick_id" id="zipInputClickButton_id" class="zipInputClickButton">Upload zip file</label>
 							</div>
 							<button class="playButton" type="submit">PLAY</button>
 						</form>
 					</div>
 				</div>
+			</div>
+			<div>
+				{lobby ? (
+					<div>
+						<h2>Players in lobby</h2>
+						<ul>
+							{lobby.map((player, index) => (
+								<li key={index}>{player}</li>
+							))}
+						</ul>
+					</div>
+				) : null}
 			</div>
 		</div>
     )
