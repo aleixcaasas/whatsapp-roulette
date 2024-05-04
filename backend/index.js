@@ -1,14 +1,26 @@
 const express = require("express");
 const morgan = require("morgan");
+const cors = require("cors");
 const app = express();
 
-const PORT = 3000;
+const PORT = 4000;
 const routes = require("./routes/routes.js"); // Se importan las rutas correctamente
 const bodyParser = require("body-parser");
 
 app.use(express.json());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
+app.use(express.urlencoded({ extended: true }));
+app.use(
+    cors({
+        origin: "*",
+        methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+        credentials: false,
+        allowedHeaders: ["Content-Type", "Authorization"], // Agrega aquí los encabezados personalizados que estés utilizando en tu solicitud
+    })
+);
+app.options('*', cors());
+
 
 app.use(
 	morgan(":method :url :status :res[content-length] - :response-time ms")
