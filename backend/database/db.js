@@ -30,6 +30,7 @@ async function insertGame(game) {
 		await client.close();
 	}
 }
+
 async function getPlayersLobby(gameId) {
 	const client = new MongoClient(uri);
 	try {
@@ -81,7 +82,6 @@ async function addPlayer(gameId, username) {
 
 async function startGame(gameId) {
 	const client = new MongoClient(uri);
-	console.log("gameId", gameId);
 
 	try {
 		await client.connect();
@@ -115,7 +115,7 @@ async function startGame(gameId) {
 	}
 }
 
-async function getRandomMessage(gameId) {
+async function getNextRoundMessage(gameId) {
 	const client = new MongoClient(uri);
 
 	try {
@@ -138,10 +138,23 @@ async function getRandomMessage(gameId) {
 		const messages = game.messages;
 
 		// Seleccionar un mensaje aleatorio
-		const randomIndex = Math.floor(Math.random() * messages.length);
+		const randomIndex = Math.floor(Math.random() * messages.length - 1);
 		const randomMessage = messages[randomIndex];
 
-		console.log("Mensaje aleatorio seleccionado:", randomMessage);
+		// Verificar si la lista de rondas ya existe en el juego
+		if (!game.rounds) {
+			// Si no existe, inicializarla como un arreglo vacío
+			game.rounds = [];
+		}
+
+		// Agregar el mensaje seleccionado a la lista de rondas
+		game.rounds.push(randomMessage);
+
+		// Actualizar el juego en la base de datos con la nueva lista de rondas
+		await collection.updateOne(
+			{ gameId: gameId },
+			{ $set: { rounds: game.rounds } }
+		);
 
 		return { ok: true, message: randomMessage };
 	} catch (error) {
@@ -152,10 +165,39 @@ async function getRandomMessage(gameId) {
 	}
 }
 
+async function getGame(gameId) {
+	const client = new MongoClient(uri);
+
+	try {
+		await client.connect();
+
+		const database = client.db(); // Obtiene la base de datos especificada en la URI
+		const collection = database.collection(collectionName);
+
+		// Buscar el juego por su ID
+		const game = await collection.findOne({
+			gameId: gameId,
+		});
+
+		if (!game) {
+			console.log(`No se encontró ningún juego con el ID ${gameId}`);
+			return { ok: false, message: "No game found" };
+		}
+
+		return { ok: true, game };
+	} catch (error) {
+		console.error("Error al obtener el juego:", error);
+		return { ok: false, message: "Error getting game" };
+	} finally {
+		await client.close();
+	}
+}
+
 module.exports = {
 	insertGame,
 	addPlayer,
 	startDBGame: startGame,
-	getRandomMessage,
+	getNextRoundMessage,
 	getPlayersLobby,
+	getGame,
 };

@@ -8,8 +8,9 @@ const {
 	insertGame,
 	addPlayer,
 	startDBGame,
-	getRandomMessage,
+	getNextRoundMessage,
 	getPlayersLobby,
+	getGame,
 } = require("../database/db");
 
 const getPlayers = async (req, res) => {
@@ -139,16 +140,13 @@ const startGame = async (req, res) => {
 	const gameId = req.body.gameId;
 	const status = await startDBGame(gameId);
 
+	const game = await getGame(gameId);
 	if (status.ok) {
-		// Emitir un evento a todas las conexiones WebSocket activas
-		/*activeSockets.forEach((ws) => {
-			ws.emit("game-started", { gameId }); // Emitir el evento "game-started" con los datos relevantes
-		});*/
-
 		res.status(200)
 			.json({
 				ok: true,
 				message: "El juego ha comenzado correctamente.",
+				users: game.game.users.splice(1, game.game.users.length - 1),
 			})
 			.end();
 	} else {
@@ -158,16 +156,35 @@ const startGame = async (req, res) => {
 	}
 };
 
-const getRoundData = async (req, res) => {
-	const gameId = req.body.gameId;
-	const round = req.body.round;
-	const roundData = await getRound(gameId, round);
+const getNewRoundData = async (req, res) => {
+	const gameId = req.query.gameId;
+	const roundData = await getNextRoundMessage(gameId);
 
 	if (roundData) {
-		res.status(200).json(roundData).end();
+		if (roundData.message.isMedia) {
+			const game = await getGame(gameId);
+			const zip = new AdmZip(game.game.filePath);
+
+			const mediaFile = zip.getEntry(roundData.message.content);
+			if (mediaFile) {
+				const mediaContent = mediaFile.getData();
+				res.setHeader("Content-Type", "application/octet-stream");
+				res.send(mediaContent);
+			} else {
+				res.status(404).json({ message: "Media file not found" }).end(); 
+			}
+		} else {
+			res.status(200).json(roundData).end();
+		}
 	} else {
 		res.status(400).json({ message: "No round data found" }).end();
 	}
 };
 
-module.exports = { createGame, joinGame, startGame, getPlayers };
+module.exports = {
+	createGame,
+	joinGame,
+	startGame,
+	getPlayers,
+	getNewRoundData,
+};
