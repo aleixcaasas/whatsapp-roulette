@@ -4,7 +4,6 @@ import { FaArrowLeft } from "react-icons/fa";
 import { useLocation } from "react-router-dom";
 import { Link } from "react-router-dom";
 
-import { useLocation } from 'react-router-dom';
 import "./createGame.css";
 import zipIcon from "../../assets/zipIcon.png";
 
@@ -13,7 +12,7 @@ const CreateGame = () => {
 	const [name, setName] = useState("");
 	const location = useLocation();
 	const [lobby, setLobbyUsers] = useState([]);
-	const [gameId, setGameId] = useState("");	
+	const [gameId, setGameId] = useState("");
 	const [question, setQuestion] = useState(null);
 	const [users, setUsers] = useState([]);
 
@@ -40,7 +39,6 @@ const CreateGame = () => {
 			socket.close(); // Cerrar la conexión WebSocket al desmontar el componente
 		};
 	}, []);*/
-
 
 	/*useEffect(() => {
 		// Establecer conexión WebSocket cuando se monta el componente
@@ -76,9 +74,10 @@ const CreateGame = () => {
 
 	useEffect(() => {
 		const par = new URLSearchParams(location.search);
-		const namePar = par.get('name');
-		document.getElementById('usernameHeader_id').innerHTML = "Username: " + namePar
-	})
+		const namePar = par.get("name");
+		document.getElementById("usernameHeader_id").innerHTML =
+			"Username: " + namePar;
+	});
 
 	const sendForm = (event) => {
 		event.preventDefault();
@@ -194,19 +193,12 @@ const CreateGame = () => {
 							onClick={returnHome}
 						/>
 					</div>
-
 					<div
 						id="createGameContainer_id"
 						class="createGameContainer"
 					>
 						<h1 className="create-game">Create Game</h1>
 						<form className="formCreate" onSubmit={sendForm}>
-			<div className='divCreate'>
-				<div className='titleCreateGame'>
-					<div id="arrowContainer_id" class="arrowContainer"><FaArrowLeft size={25} class='arrowLeft' onClick={returnHome}/></div>
-					<div id="createGameContainer_id" class="createGameContainer">
-						<h1 className='create-game'>Create Game</h1>
-						<form className='formCreate' onSubmit={sendForm}>
 							<div id="zipForm_id" class="zipForm">
 								<input
 									type="file"
@@ -244,17 +236,26 @@ const CreateGame = () => {
 			</div>
 			<div>
 				{lobby.length > 0 ? (
-					
-					<div id="lobbyPlayersContainer_id" class="lobbyPlayersContainer">
+					<div
+						id="lobbyPlayersContainer_id"
+						class="lobbyPlayersContainer"
+					>
 						<div class="playersLobbyText">Players Lobby</div>
 						<div class="inviteFriendsCodeContainer">
-							<div class="inviteFriendsCode">Invitation code:</div>
+							<div class="inviteFriendsCode">
+								Invitation code:
+							</div>
 							<div class="gameId">{gameId}</div>
 						</div>
 						{lobby.map((player, index) => (
-							<div class="playerStyleCSS" key={index}>[Player {index+1}] <h1 class="h1Playertext">{player}</h1></div>
+							<div class="playerStyleCSS" key={index}>
+								[Player {index + 1}]{" "}
+								<h1 class="h1Playertext">{player}</h1>
+							</div>
 						))}
-						<button class="playButton" type="submit">PLAY GAME</button>
+						<button class="playButton" type="submit">
+							PLAY GAME
+						</button>
 					</div>
 				) : null}
 			</div>
