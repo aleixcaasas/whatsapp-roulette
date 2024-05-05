@@ -124,6 +124,37 @@ const CreateGame = () => {
 		});
 	};
 
+	const nextRound = () => {
+		axios
+			.get(`http://localhost:4000/new-round?gameId=${gameId}`)
+			.then((response) => {
+				/*if (
+					response.headers["content-type"].startsWith(
+						"application/octet-stream"
+					)
+				) {
+					const imageUrl = window.URL.createObjectURL(response.data);
+					const imgElement = document.createElement("img");
+					imgElement.src = imageUrl;
+					const imageContainer =
+						document.getElementById("image-container");
+					imageContainer.appendChild(imgElement);
+				} else if (
+					response.headers["content-type"].startsWith("audio")
+				) {
+					const audioUrl = window.URL.createObjectURL(response.data);
+					const audioElement = document.createElement("audio");
+					Element.src = audioUrl;
+					audioElement.controls = true;
+					const audioContainer =
+						document.getElementById("audio-container");
+					audioContainer.appendChild(audioElement);
+					audioElement.play();
+				} else {*/
+				setQuestion(response.data.message);
+			});
+	};
+
 	const returnHome = () => {
 		window.location.href = "/";
 	};
@@ -139,7 +170,7 @@ const CreateGame = () => {
 						.then((response) => {
 							if (
 								response.headers["content-type"].startsWith(
-									"image"
+									"application/octet-stream"
 								)
 							) {
 								const imageUrl = window.URL.createObjectURL(
@@ -172,6 +203,26 @@ const CreateGame = () => {
 							}
 						});
 				}
+			})
+			.catch((error) => {
+				console.error("Error:", error);
+			});
+	};
+
+	const submitVote = (user) => {
+		console.log("Voting for: ", user);
+		axios
+			.post(
+				"http://localhost:4000/vote",
+				{
+					gameId: gameId,
+					player: name,
+					vote: user,
+				},
+				{ headers: { "Content-Type": "application/json" } }
+			)
+			.then((response) => {
+				console.log(response.data);
 			})
 			.catch((error) => {
 				console.error("Error:", error);
@@ -260,10 +311,13 @@ const CreateGame = () => {
 				{question ? <h1>Mensaje: {question.content}</h1> : null}
 				{users
 					? users.map((user, index) => (
-							<button key={index}>{user}</button>
+							<button onClick={() => submitVote(user)} key={index}>
+								{user}
+							</button>
 					  ))
 					: null}
 				<div id="image-container"></div>
+				<button onClick={nextRound}>Next Round</button>
 			</div>
 		</div>
 	);

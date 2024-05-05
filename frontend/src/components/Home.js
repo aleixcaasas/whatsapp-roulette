@@ -1,13 +1,11 @@
 import {React} from 'react'
 import { useState, useEffect } from 'react'
-//import MainMenu from '../components/mainMenu/mainMenu'
-import GamePanel from '../components/gamePanel/gamePanel'
+import MainMenu from '../components/mainMenu/mainMenu'
 
 function Home() {
     return (
         <>
-            {/* <MainMenu/> */}
-            <GamePanel/>
+            <MainMenu/>
         </>
     )
 }
