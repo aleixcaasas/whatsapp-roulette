@@ -8,7 +8,11 @@ const bodyParser = require("body-parser");
 
 const app = express();
 const server = http.createServer(app);
-const io = socketIo(server);
+const io = socketIo(server, {
+	cors: {
+		origin: "*",
+		methods: ["GET", "POST"],
+	}});
 
 const PORT = 4000;
 
@@ -49,7 +53,9 @@ io.on("connection", (socket) => {
 
 	/*// Agregar la conexión WebSocket activa a la lista
 	activeSockets.push(socket);*/
-
+	socket.on('join-game', (data) => { //quan un usuari es connecta a una partida ho commentem a tots!
+		io.emit('epa', data);
+	});
 	// Manejar evento de desconexión
 	socket.on("disconnect", () => {
 		console.log("Un cliente se ha desconectado");
@@ -57,6 +63,8 @@ io.on("connection", (socket) => {
 		activeSockets.splice(activeSockets.indexOf(socket), 1);
 	});
 });
+
+
 
 // Endpoint para enviar un evento a todos los clientes conectados
 app.post("/api/sendEvent", (req, res) => {

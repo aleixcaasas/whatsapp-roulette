@@ -113,11 +113,11 @@ const joinGame = async (req, res) => {
 
 	if (result.ok == true) {
 		// Enviar mensaje al cliente para establecer la conexión WebSocket
-		/*const ws = req.ws; // Supongamos que req.ws contiene la conexión WebSocket del cliente
+		const ws = req.ws; // Supongamos que req.ws contiene la conexión WebSocket del cliente
 		if (ws) {
 			ws.emit("establish-socket-connection");
 			console.log("WebSocket connected");
-		}*/
+		}
 		res.status(200).json(result).end();
 	}
 	if (!result.ok) res.status(500).json(result.message).end();

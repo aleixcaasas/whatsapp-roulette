@@ -4,7 +4,7 @@ const { MongoClient } = require("mongodb");
 const connectDB = async () => {
 	try {
 		await mongoose.connect(
-			"mongodb+srv://ipasauriz:J8OQES0fMc51Xcm4@cluster0.ciy62u8.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0",
+			"mongodb://localhost:27017/tetes",
 			{
 				useNewUrlParser: true,
 				useUnifiedTopology: true,
@@ -18,7 +18,7 @@ const connectDB = async () => {
 
 // URL de conexión a la base de datos de MongoDB Atlas
 const uri =
-	"mongodb+srv://ipasauriz:J8OQES0fMc51Xcm4@cluster0.ciy62u8.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0";
+	"mongodb://localhost:27017/tetes";
 
 // Nombre de la colección en la que deseas insertar el juego
 const collectionName = "games";
