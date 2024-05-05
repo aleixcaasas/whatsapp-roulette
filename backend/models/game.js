@@ -1,11 +1,12 @@
 const Message = require('./message')
 
 class Game {
-	constructor(gameId ,player) {
+	constructor(gameId, player) {
 		this.gameId = gameId
 		this.players = [player];
 		this.messages = [];
 		this.users = []
+		this.filePath = null 
 	}
 
 	addMessage(sender, content, isMedia) {
@@ -15,6 +16,10 @@ class Game {
 
 	addUser(username){
 		this.users.push(username)
+	}
+
+	setFilePath(filePath){
+		this.filePath = filePath
 	}
 }
 

@@ -42,7 +42,7 @@
   border: none;
   margin-right: 30px;
 }
-.zipInputClickButton:hover, .inviteFriendsButton:hover, .playButton:hover{
+.zipInputClickButton:hover, .inviteFriendsButton:hover, .playButton:hover, .playButtonNextGame:hover{
   opacity: 70%;
   cursor: pointer;
 }
@@ -137,6 +137,18 @@
   text-align: center;
   border: none;
 }
+.playButtonNextGame{
+  font-size: 15px;
+  font-family: "DMSans-Bold";
+  width: 100%;
+  height: 40px;
+  background-color: rgb(255, 70, 70);
+  color: white;
+  border-radius: 5px;
+  text-align: center;
+  border: none;
+  margin-top: 10px;
+}
 .createButton:hover{
   opacity: 70%;
   cursor: pointer;
@@ -145,4 +157,70 @@
 .uploadImage{
   width: 30px;
   margin-right: 10px;
+}
+
+.gamePanelHeaderContainer{
+  display: inline-flex;
+  width: 100%;
+}
+.codeHeader{
+  font-family: "DMSans-Bold";
+  width: 250px;
+}
+.usernameHeader{
+  font-family: "DMSans-Bold";
+}
+.gamePanelBodyContainer{
+  font-family: "DMSans-Bold";
+  margin-top: 10px;
+  padding-bottom: 30px;
+  background-color: rgb(225, 225, 225);
+  border-radius: 10px;
+  padding-top: 20px;
+  padding-left: 20px;
+}
+.gamePanelBottomContainer{
+  font-family: "DMSans-Bold";
+  margin-top: 10px;
+  background-color: rgb(225, 225, 225);
+  border-radius: 10px;
+  padding-top: 50px;
+  padding-left: 50px;
+  padding-bottom: 50px;
+}
+.bottomRight{
+  display: inline-flex;
+  flex-direction: column;
+}
+.bottomLeft{
+  display: inline-flex;
+  flex-direction: column;
+}
+.whoisthis{
+  font-size: 20px;
+  color: rgb(150, 150, 150);
+}
+.lobbyCode{
+  width: 200px;
+}
+.missatgeRandomWhatsapp{
+  font-size: 40px;
+}
+.groupFileName{
+  margin-top: 9%;
+}
+.indexUserButton{
+  font-size: 25px;
+  font-family: "DMSans-Bold";
+  height: 35px;
+  background-color: rgb(86, 86, 86);
+  color: white;
+  border-radius: 5px;
+  text-align: center;
+  border: none;
+  margin: 10px;
+}
+.indexUserButton:hover{
+  opacity: 75%;
+  cursor: pointer;
 }

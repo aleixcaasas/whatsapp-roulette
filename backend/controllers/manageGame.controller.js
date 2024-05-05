@@ -1,3 +1,6 @@
+const fs = require("fs");
+const path = require("path");
+
 const AdmZip = require("adm-zip");
 const Game = require("../models/game");
 const { generateGameId } = require("../utils/generateGameID");
@@ -5,21 +8,21 @@ const {
 	insertGame,
 	addPlayer,
 	startDBGame,
-	getRandomMessage,
+	getNextRoundMessage,
 	getPlayersLobby,
+	getGame,
+	saveVote,
 } = require("../database/db");
 
 const getPlayers = async (req, res) => {
-    console.log('epa', req.body);
-    const gameId = req.body.gameId;
-    const players = await getPlayersLobby(gameId);
-    if (players) {
-        res.status(200).json(players).end();
-    } else {
-        res.status(400).json({ message: "No players found" }).end();
-    }
-}
-
+	const gameId = req.body.gameId;
+	const players = await getPlayersLobby(gameId);
+	if (players) {
+		res.status(200).json(players).end();
+	} else {
+		res.status(400).json({ message: "No players found" }).end();
+	}
+};
 
 const createGame = async (req, res) => {
 	// Verificar si se ha cargado un archivo correctamente
@@ -87,6 +90,18 @@ const createGame = async (req, res) => {
 		}
 	});
 
+	// Crear el directorio temp si no existe
+	const tempDir = path.join(__dirname, "temp");
+	if (!fs.existsSync(tempDir)) {
+		fs.mkdirSync(tempDir);
+	}
+
+	// Almacenar el archivo cargado en una ubicación temporal
+	const filePath = path.join(__dirname, "temp", gameId + ".zip");
+	console.log(filePath);
+	fs.writeFileSync(filePath, zipBuffer);
+	game.setFilePath(filePath);
+
 	const status = await insertGame(game);
 
 	if (status == true) {
@@ -108,7 +123,6 @@ const createGame = async (req, res) => {
 const joinGame = async (req, res) => {
 	const gameId = req.body.gameId;
 	const username = req.body.username;
-	console.log(gameId, username);
 	const result = await addPlayer(gameId, username);
 
 	if (result.ok == true) {
@@ -125,21 +139,98 @@ const joinGame = async (req, res) => {
 
 const startGame = async (req, res) => {
 	const gameId = req.body.gameId;
-	const message = await getRandomMessage(gameId);
-	const status = startDBGame(gameId, message);
+	const status = await startDBGame(gameId);
 
+	const game = await getGame(gameId);
 	if (status.ok) {
-		// Emitir un evento a todas las conexiones WebSocket activas
-		/*activeSockets.forEach((ws) => {
-			ws.emit("game-started", { gameId, message }); // Emitir el evento "game-started" con los datos relevantes
-		});*/
-
-		res.status(200).json({
-			message: "El juego ha comenzado correctamente.",
-		});
+		res.status(200)
+			.json({
+				ok: true,
+				message: "El juego ha comenzado correctamente.",
+				users: game.game.users.splice(1, game.game.users.length - 1),
+			})
+			.end();
 	} else {
-		res.status(500).json({ error: "Error al iniciar el juego." });
+		res.status(500)
+			.json({ ok: false, error: "Error al iniciar el juego." })
+			.end();
 	}
 };
 
-module.exports = { createGame, joinGame, startGame, getPlayers };
+const getNewRoundData = async (req, res) => {
+	const gameId = req.query.gameId;
+	const roundData = await getNextRoundMessage(gameId);
+
+	if (roundData) {
+		if (roundData.message.isMedia) {
+			const game = await getGame(gameId);
+			const zip = new AdmZip(game.game.filePath);
+
+			const mediaFile = zip.getEntry(roundData.message.content);
+			if (mediaFile) {
+				const mediaContent = mediaFile.getData();
+				res.setHeader("Content-Type", "application/octet-stream");
+				res.send(mediaContent);
+			} else {
+				res.status(404).json({ message: "Media file not found" }).end();
+			}
+		} else {
+			res.status(200).json(roundData).end();
+		}
+	} else {
+		res.status(400).json({ message: "No round data found" }).end();
+	}
+};
+
+const registerVote = async (req, res) => {
+	const gameId = req.body.gameId;
+	const username = req.body.player;
+	const vote = req.body.vote;
+
+	const game = await getGame(gameId);
+
+	if (game) {
+		const rounds = game.game.rounds;
+		// Suponiendo que quieres votar en la última ronda, ajusta según tus necesidades
+		if (rounds.length === 0) {
+			res.status(400).json({ message: "No rounds found" }).end();
+			return;
+		}
+		const lastRoundIndex = rounds.length - 1;
+		const lastRound = rounds[lastRoundIndex];
+
+		if (lastRound) {
+			console.log(lastRound);
+			const updatedVotes = lastRound.votes.map((player) => {
+				if (player.player === username) {
+					return { ...player, vote: vote }; // Actualizar el voto del jugador encontrado
+				}
+				return player; // Devolver el jugador sin cambios si no es el jugador buscado
+			});
+			console.log(updatedVotes);
+
+			const status = await saveVote(gameId, updatedVotes);
+			if (!status.ok) {
+				res.status(500).json({ message: "Error saving vote" }).end();
+				return;
+			}
+			
+			// Si se encontró el jugador y se actualizó su voto
+			lastRound.votes = updatedVotes; // Actualizar el arreglo de votos en el objeto lastRound
+			res.status(200).json({ ok: true }).end();
+		} else {
+			res.status(400).json({ message: "Round not found" }).end();
+		}
+	} else {
+		res.status(400).json({ message: "Game not found" }).end();
+	}
+};
+
+module.exports = {
+	createGame,
+	joinGame,
+	startGame,
+	getPlayers,
+	getNewRoundData,
+	registerVote,
+};

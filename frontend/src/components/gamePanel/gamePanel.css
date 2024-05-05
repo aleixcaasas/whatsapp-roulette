@@ -1,0 +1,57 @@
+@font-face {
+    font-family: 'DMSans-Bold';
+    src: url("../../fonts/DMSans-Bold.ttf");
+}
+@font-face {
+    font-family: 'DMSans-Medium';
+    src: url("../../fonts/DMSans-Medium.ttf");
+}
+
+@font-face {
+    font-family: 'DMSans-Regular';
+    src: url("../../fonts/DMSans-Regular.ttf");
+}
+
+.gamePanelHeaderContainer{
+    display: inline-flex;
+    width: 100%;
+}
+.codeHeader{
+    font-family: "DMSans-Bold";
+    width: 250px;
+}
+.usernameHeader{
+    font-family: "DMSans-Bold";
+}
+.gamePanelBodyContainer{
+    font-family: "DMSans-Bold";
+    margin-top: 10px;
+    width: 100%;
+    height: 200px;
+    background-color: rgb(225, 225, 225);
+    border-radius: 10px;
+    padding-top: 20px;
+    padding-left: 20px;
+}
+.gamePanelBottomContainer{
+    font-family: "DMSans-Bold";
+    margin-top: 10px;
+    width: 100%;
+    height: 200px;
+    background-color: rgb(225, 225, 225);
+    border-radius: 10px;
+}
+.bottomRight{
+    display: inline-flex;
+    flex-direction: column;
+}
+.bottomLeft{
+    display: inline-flex;
+    flex-direction: column;
+}
+.whoisthis{
+    font-size: 20px;
+}
+.lobbyCode{
+    width: 300px;
+}
