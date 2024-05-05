@@ -324,10 +324,10 @@ const CreateGame = () => {
 					</div>
 					<div id="gamePanelBottomContainer_id" class="gamePanelBottomContainer">
 						{users ? users.map((user, index) => (
-								<button class="indexUserButton" key={index}>{user}</button>
+								<button class="indexUserButton" onClick={()=>submitVote(user)} key={index}>{user}</button>
 						)) : null}
 					</div>
-					<button class="playButtonNextGame" onClick={startGame}>NEXT GAME</button>
+					<button class="playButtonNextGame" onClick={nextRound}>NEXT GAME</button>
 				</div>
 			) : null}	
 		</div>
