@@ -15,6 +15,7 @@ const CreateGame = () => {
 	const [gameId, setGameId] = useState("");
 	const [question, setQuestion] = useState(null);
 	const [users, setUsers] = useState([]);
+	const [startGameVisible, setStartGameVisible] = useState(true);
 
 	/*useEffect(() => {
 		// Establecer conexión WebSocket cuando se monta el componente
@@ -114,10 +115,7 @@ const CreateGame = () => {
 		const fileChosen = document.getElementById("fileChosen_id");
 		zipInputClick_id.addEventListener("change", function () {
 			fileChosen.textContent = this.files[0].name;
-			if (
-				fileChosen.textContent.substr(
-					fileChosen.textContent.length - 3
-				) == "zip"
+			if (fileChosen.textContent.substr(fileChosen.textContent.length - 3) == "zip"
 			) {
 				document.getElementById("uploadImage_id").src = zipIcon;
 			}
@@ -169,70 +167,75 @@ const CreateGame = () => {
 								audioElement.play();
 							} else {
 								setQuestion(response.data.message);
+								setStartGameVisible(false)
 							}
 						});
 				}
 			})
 			.catch((error) => {
 				console.error("Error:", error);
-			});
+			});			
 	};
 
 	return (
 		<div id="createGameContainer_id" class="createGameContainer">
 			<div id="createGameHeader_id" class="createGameHeader">
 				<div id="usernameHeader_id" class="usernameHeader"></div>
-				<div>1/10</div>
-			</div>
-			<div className="divCreate">
-				<div className="titleCreateGame">
-					<div id="arrowContainer_id" class="arrowContainer">
-						<FaArrowLeft
-							size={25}
-							class="arrowLeft"
-							onClick={returnHome}
-						/>
-					</div>
-					<div
-						id="createGameContainer_id"
-						class="createGameContainer"
-					>
-						<h1 className="create-game">Create Game</h1>
-						<form className="formCreate" onSubmit={sendForm}>
-							<div id="zipForm_id" class="zipForm">
-								<input
-									type="file"
-									class="zipInputClick"
-									id="zipInputClick_id"
-									onChange={(e) => setFile(e.target.files[0])}
-									hidden
-								/>
-								<label
-									for="zipInputClick_id"
-									id="zipInputClickButton_id"
-									class="zipInputClickButton"
-									onClick={changeFileName}
-								>
-									Upload zip file
-								</label>
-								<img
-									src=""
-									id="uploadImage_id"
-									class="uploadImage"
-								></img>
-								<span id="fileChosen_id">No file chosen</span>
-							</div>
-							<button class="createButton" type="submit">
-								CREATE
-							</button>
-						</form>
-					</div>
-					{console.log("Lobby: ", lobby)}
-					<div class="blankSpace"></div>
-				</div>
-			</div>
-			<div>
 				{lobby.length > 0 ? (
+					<div class="lobbyCode">Lobby code: {gameId}</div>
+				) : null}
+			</div>
+			{startGameVisible ? (
+				<div className="divCreate">
+					<div className="titleCreateGame">
+						<div id="arrowContainer_id" class="arrowContainer">
+							<FaArrowLeft
+								size={25}
+								class="arrowLeft"
+								onClick={returnHome}
+							/>
+						</div>
+						<div
+							id="createGameContainer_id"
+							class="createGameContainer"
+						>
+							<h1 className="create-game">Create Game</h1>
+							<form className="formCreate" onSubmit={sendForm}>
+								<div id="zipForm_id" class="zipForm">
+									<input
+										type="file"
+										class="zipInputClick"
+										id="zipInputClick_id"
+										onChange={(e) => setFile(e.target.files[0])}
+										hidden
+									/>
+									<label
+										for="zipInputClick_id"
+										id="zipInputClickButton_id"
+										class="zipInputClickButton"
+										onClick={changeFileName}
+									>
+										Upload zip file
+									</label>
+									<img
+										src=""
+										id="uploadImage_id"
+										class="uploadImage"
+									></img>
+									<span id="fileChosen_id">No file chosen</span>
+								</div>
+								<button class="createButton" type="submit">
+									CREATE
+								</button>
+							</form>
+						</div>
+						{console.log("Lobby: ", lobby)}
+						<div class="blankSpace"></div>
+					</div>
+				</div>
+			) : null}
+			<div>
+				{lobby.length > 0 && startGameVisible ? (
 					<div
 						id="lobbyPlayersContainer_id"
 						class="lobbyPlayersContainer"
@@ -256,15 +259,26 @@ const CreateGame = () => {
 					</div>
 				) : null}
 			</div>
-			<div>
-				{question ? <h1>Mensaje: {question.content}</h1> : null}
-				{users
-					? users.map((user, index) => (
-							<button key={index}>{user}</button>
-					  ))
-					: null}
-				<div id="image-container"></div>
-			</div>
+
+			{!startGameVisible ? (
+				<div id="gamePanelContainer_id" class="gamePanelContainer">
+					<div id="gamePanelHeaderContainer_id" class="gamePanelHeaderContainer">
+						<div id="usernameHeader_id" class="usernameHeader"></div>
+						<div id="codeHeader_id" class="codeHeader"></div>
+					</div>
+					<div id="gamePanelBodyContainer_id" class="gamePanelBodyContainer">
+						<div class="whoisthis">Who is this message from?</div>
+						<div class="missatgeRandomWhatsapp">{question ? question.content : null}</div>
+						<div id="groupFileName_id" class="groupFileName">Whatsapp Group Name...</div>
+					</div>
+					<div id="gamePanelBottomContainer_id" class="gamePanelBottomContainer">
+						{users ? users.map((user, index) => (
+								<button class="indexUserButton" key={index}>{user}</button>
+						)) : null}
+					</div>
+					<button class="playButtonNextGame" onClick={startGame}>NEXT GAME</button>
+				</div>
+			) : null}	
 		</div>
 	);
 };

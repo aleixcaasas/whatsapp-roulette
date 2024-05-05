@@ -3,7 +3,7 @@ const { MongoClient } = require("mongodb");
 
 // URL de conexión a la base de datos de MongoDB Atlas
 const uri =
-	"mongodb+srv://acasasbarco:NMVHhI3Wyp67Yibx@database.fvxjvmg.mongodb.net/?retryWrites=true&w=majority&appName=database";
+	"mongodb+srv://ipasauriz:J8OQES0fMc51Xcm4@cluster0.ciy62u8.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0";
 
 // Nombre de la colección en la que deseas insertar el juego
 const collectionName = "games";
