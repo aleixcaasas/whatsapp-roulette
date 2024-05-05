@@ -136,10 +136,14 @@ async function getNextRoundMessage(gameId) {
 
 		// Obtener la lista de mensajes del juego
 		const messages = game.messages;
-
-		// Seleccionar un mensaje aleatorio
-		const randomIndex = Math.floor(Math.random() * messages.length - 1);
-		const randomMessage = messages[randomIndex];
+		let randomIndex, randomMessage;
+		let isMedia = true;
+		while (isMedia) {
+			// Seleccionar un mensaje aleatorio
+			randomIndex = Math.floor(Math.random() * messages.length - 1);
+			randomMessage = messages[randomIndex];
+			isMedia = randomMessage.isMedia;
+		}
 		randomMessage.votes = game.players.map((player) => ({
 			player: player,
 			vote: null,

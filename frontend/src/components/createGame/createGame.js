@@ -34,16 +34,18 @@ const CreateGame = () => {
 		}
 	}, [location.search]);
 
-
-	socket.on('epa', (data) => {
-		axios.post("http://localhost:4000/lobby", { gameId: data.gameId })
-			.then((response) => {
-				setLobbyUsers(response.data);
-			})
-			.catch((error) => {
-				console.error("Error:", error);
-			});
-	});
+	useEffect(() => {
+		socket.on('epa', (data) => {
+			console.log(data)
+			axios.post("http://localhost:4000/lobby", { gameId: data.gameId })
+				.then((response) => {
+					setLobbyUsers(response.data);
+				})
+				.catch((error) => {
+					console.error("Error:", error);
+				});
+		});
+	}, []);
 
 	const sendForm = (event) => {
 		event.preventDefault();
@@ -53,8 +55,8 @@ const CreateGame = () => {
 		formData.append("username", name);
 
 		axios.post("http://localhost:4000/create-game/", formData, {
-				headers: { "Content-Type": "multipart/form-data" },
-			})
+			headers: { "Content-Type": "multipart/form-data" },
+		})
 			.then((response) => {
 				setGameId(response.data.gameId);
 				//fem peticio per saber la gent que hi ha a a lobby
@@ -85,20 +87,29 @@ const CreateGame = () => {
 		});
 	};
 
+	useEffect(() => {
+		socket.on('start', (data) => {
+			console.log('data',data)
+			setUsers(data.users);
+			setQuestion(data.phrase);
+			setStartGameVisible(false);
+		});
+	}, []);
+
 	const startGame = () => {
 		axios.post("http://localhost:4000/start-game", { gameId: gameId })
 			.then((response) => {
 				if (response.data.ok === true) {
 					setUsers(response.data.users);
 					axios.get(`http://localhost:4000/new-round?gameId=${gameId}`)
-						.then((response) => {
+						.then((response2) => {
 							if (
-								response.headers["content-type"].startsWith(
+								response2.headers["content-type"].startsWith(
 									"application/octet-stream"
 								)
 							) {
 								const imageUrl = window.URL.createObjectURL(
-									response.data
+									response2.data
 								);
 								const imgElement =
 									document.createElement("img");
@@ -107,12 +118,12 @@ const CreateGame = () => {
 									document.getElementById("image-container");
 								imageContainer.appendChild(imgElement);
 							} else if (
-								response.headers["content-type"].startsWith(
+								response2.headers["content-type"].startsWith(
 									"audio"
 								)
 							) {
 								const audioUrl = window.URL.createObjectURL(
-									response.data
+									response2.data
 								);
 								const audioElement =
 									document.createElement("audio");
@@ -123,8 +134,9 @@ const CreateGame = () => {
 								audioContainer.appendChild(audioElement);
 								audioElement.play();
 							} else {
-								setQuestion(response.data.message);
-								setStartGameVisible(false)
+								setQuestion(response2.data.message);
+								setStartGameVisible(false);
+								socket.emit('new-round', { phrase: response2.data.message, users: response.data.users });
 							}
 						});
 				}
@@ -182,6 +194,8 @@ const CreateGame = () => {
 					audioElement.play();
 				} else {*/
 				setQuestion(response.data.message);
+				socket.emit('new-round', { phrase: response.data.message, users: users });
+
 			});
 	};
 
@@ -254,9 +268,11 @@ const CreateGame = () => {
 								[Player {index + 1}] <h1 className="h1Playertext">{player}</h1>
 							</div>
 						))}
-						<button class="playButton" onClick={startGame}>
-							PLAY GAME
-						</button>
+						{!veDeFora ? (
+							<button class="playButton" onClick={startGame}>
+								PLAY GAME
+							</button>
+						) : null}
 					</div>
 				) : null}
 			</div>
@@ -277,7 +293,11 @@ const CreateGame = () => {
 							<button class="indexUserButton" onClick={() => submitVote(user)} key={index}>{user}</button>
 						)) : null}
 					</div>
-					<button class="playButtonNextGame" onClick={nextRound}>NEXT GAME</button>
+					{
+						!veDeFora ? (
+							<button class="nextRoundButton" onClick={nextRound}>NEXT ROUND</button>
+						) : null
+					}
 				</div>
 			) : null}
 		</div>

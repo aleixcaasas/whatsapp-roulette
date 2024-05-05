@@ -56,6 +56,10 @@ io.on("connection", (socket) => {
 	socket.on('join-game', (data) => { //quan un usuari es connecta a una partida ho commentem a tots!
 		io.emit('epa', data);
 	});
+
+	socket.on('new-round', (data) => { //quan un usuari es connecta a una partida ho commentem a tots!
+		io.emit('start', data);
+	});
 	// Manejar evento de desconexión
 	socket.on("disconnect", () => {
 		console.log("Un cliente se ha desconectado");
