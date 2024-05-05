@@ -5,7 +5,8 @@ const {
 	joinGame,
     startGame,
 	getPlayers,
-	getNewRoundData
+	getNewRoundData,
+	registerVote
 } = require("../controllers/manageGame.controller");
 const multer = require("multer");
 const upload = multer({ storage: multer.memoryStorage() });
@@ -15,5 +16,6 @@ router.post("/join-game", joinGame);
 router.post("/start-game", startGame);
 router.post("/lobby", getPlayers);
 router.get("/new-round", getNewRoundData);
+router.post("/vote", registerVote);
 
 module.exports = router;

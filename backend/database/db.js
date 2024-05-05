@@ -140,15 +140,19 @@ async function getNextRoundMessage(gameId) {
 		// Seleccionar un mensaje aleatorio
 		const randomIndex = Math.floor(Math.random() * messages.length - 1);
 		const randomMessage = messages[randomIndex];
+		randomMessage.votes = game.players.map((player) => ({
+			player: player,
+			vote: null,
+		}));
 
 		// Verificar si la lista de rondas ya existe en el juego
 		if (!game.rounds) {
 			// Si no existe, inicializarla como un arreglo vacío
 			game.rounds = [];
 		}
-
 		// Agregar el mensaje seleccionado a la lista de rondas
 		game.rounds.push(randomMessage);
+		console.log(game.rounds);
 
 		// Actualizar el juego en la base de datos con la nueva lista de rondas
 		await collection.updateOne(
@@ -193,6 +197,56 @@ async function getGame(gameId) {
 	}
 }
 
+async function saveVote(gameId, newVotes) {
+	const client = new MongoClient(uri);
+
+	try {
+		await client.connect();
+
+		const database = client.db(); // Obtiene la base de datos especificada en la URI
+		const collection = database.collection(collectionName);
+
+		// Buscar el juego por su ID
+		const game = await collection.findOne({
+			gameId: gameId,
+		});
+
+		if (!game) {
+			console.log(`No se encontró ningún juego con el ID ${gameId}`);
+			return { ok: false, message: "No game found" };
+		}
+
+		// Obtener la lista de rondas del juego
+		const rounds = game.rounds;
+
+		// Suponiendo que quieres votar en la última ronda, ajusta según tus necesidades
+		if (rounds.length === 0) {
+			return { ok: false, message: "No rounds found" };
+		}
+
+		const lastRoundIndex = rounds.length - 1;
+		const lastRound = rounds[lastRoundIndex];
+		lastRound.votes = newVotes;
+
+		if (!lastRound) {
+			return { ok: false, message: "No last round found" };
+		}
+
+		// Actualizar el juego en la base de datos con el voto del jugador
+		await collection.updateOne(
+			{ gameId: gameId },
+			{ $set: { rounds: rounds } }
+		);
+
+		return { ok: true };
+	} catch (error) {
+		console.error("Error al registrar el voto:", error);
+		return { ok: false, message: "Error registering vote" };
+	} finally {
+		await client.close();
+	}
+}
+
 module.exports = {
 	insertGame,
 	addPlayer,
@@ -200,4 +254,5 @@ module.exports = {
 	getNextRoundMessage,
 	getPlayersLobby,
 	getGame,
+	saveVote,
 };

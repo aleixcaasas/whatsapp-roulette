@@ -11,6 +11,7 @@ const {
 	getNextRoundMessage,
 	getPlayersLobby,
 	getGame,
+	saveVote,
 } = require("../database/db");
 
 const getPlayers = async (req, res) => {
@@ -171,7 +172,7 @@ const getNewRoundData = async (req, res) => {
 				res.setHeader("Content-Type", "application/octet-stream");
 				res.send(mediaContent);
 			} else {
-				res.status(404).json({ message: "Media file not found" }).end(); 
+				res.status(404).json({ message: "Media file not found" }).end();
 			}
 		} else {
 			res.status(200).json(roundData).end();
@@ -181,10 +182,55 @@ const getNewRoundData = async (req, res) => {
 	}
 };
 
+const registerVote = async (req, res) => {
+	const gameId = req.body.gameId;
+	const username = req.body.player;
+	const vote = req.body.vote;
+
+	const game = await getGame(gameId);
+
+	if (game) {
+		const rounds = game.game.rounds;
+		// Suponiendo que quieres votar en la última ronda, ajusta según tus necesidades
+		if (rounds.length === 0) {
+			res.status(400).json({ message: "No rounds found" }).end();
+			return;
+		}
+		const lastRoundIndex = rounds.length - 1;
+		const lastRound = rounds[lastRoundIndex];
+
+		if (lastRound) {
+			console.log(lastRound);
+			const updatedVotes = lastRound.votes.map((player) => {
+				if (player.player === username) {
+					return { ...player, vote: vote }; // Actualizar el voto del jugador encontrado
+				}
+				return player; // Devolver el jugador sin cambios si no es el jugador buscado
+			});
+			console.log(updatedVotes);
+
+			const status = await saveVote(gameId, updatedVotes);
+			if (!status.ok) {
+				res.status(500).json({ message: "Error saving vote" }).end();
+				return;
+			}
+			
+			// Si se encontró el jugador y se actualizó su voto
+			lastRound.votes = updatedVotes; // Actualizar el arreglo de votos en el objeto lastRound
+			res.status(200).json({ ok: true }).end();
+		} else {
+			res.status(400).json({ message: "Round not found" }).end();
+		}
+	} else {
+		res.status(400).json({ message: "Game not found" }).end();
+	}
+};
+
 module.exports = {
 	createGame,
 	joinGame,
 	startGame,
 	getPlayers,
 	getNewRoundData,
+	registerVote,
 };
