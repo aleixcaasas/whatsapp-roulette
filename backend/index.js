@@ -29,14 +29,14 @@ app.options("*", cors());
 // Mantener una lista de conexiones WebSocket activas
 const activeSockets = [];
 
-// WebSocket middleware
+/*// WebSocket middleware
 const attachWebSocket = (io) => {
 	return (req, res, next) => {
 		req.ws = io; // Adjunta el objeto io al objeto de solicitud req
 		next();
 	};
 };
-app.use(attachWebSocket(io));
+app.use(attachWebSocket(io));*/
 
 app.use(
 	morgan(":method :url :status :res[content-length] - :response-time ms")
@@ -47,8 +47,8 @@ app.use("/", routes);
 io.on("connection", (socket) => {
 	console.log("Un cliente se ha conectado");
 
-	// Agregar la conexión WebSocket activa a la lista
-	activeSockets.push(socket);
+	/*// Agregar la conexión WebSocket activa a la lista
+	activeSockets.push(socket);*/
 
 	// Manejar evento de desconexión
 	socket.on("disconnect", () => {
