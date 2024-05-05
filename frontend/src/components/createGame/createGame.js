@@ -232,9 +232,6 @@ const CreateGame = () => {
 				</div>
 			</div>
 			<div>
-				<button onClick={startGame}>Start Game</button>
-			</div>
-			<div>
 				{lobby.length > 0 ? (
 					<div
 						id="lobbyPlayersContainer_id"
@@ -253,7 +250,7 @@ const CreateGame = () => {
 								<h1 class="h1Playertext">{player}</h1>
 							</div>
 						))}
-						<button class="playButton" type="submit">
+						<button class="playButton" onClick={startGame}>
 							PLAY GAME
 						</button>
 					</div>
